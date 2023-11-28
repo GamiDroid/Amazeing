@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34316.72
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amazeing", "Amazeing\Amazeing.csproj", "{4F0E6A9D-CB0D-41D1-866F-59D92087D113}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F0E6A9D-CB0D-41D1-866F-59D92087D113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F0E6A9D-CB0D-41D1-866F-59D92087D113}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F0E6A9D-CB0D-41D1-866F-59D92087D113}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F0E6A9D-CB0D-41D1-866F-59D92087D113}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3EF47182-ED6B-4DA7-96C1-97C2736700AC}
+	EndGlobalSection
+EndGlobal
