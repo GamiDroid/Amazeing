@@ -1,5 +1,7 @@
+﻿using Amazeing;
+using Amazeing.Models;
 ﻿
-using System.Net.Http.Headers;
+AmazeingDbContext.CreateOrUpdateModel();
 
 using var httpclient = new HttpClient
 {
