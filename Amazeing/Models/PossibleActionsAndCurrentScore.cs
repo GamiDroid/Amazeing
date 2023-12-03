@@ -6,5 +6,5 @@ internal sealed class PossibleActionsAndCurrentScore
     public bool CanExitMazeHere { get; set; }
     public int CurrentScoreInHand { get; set; }
     public int CurrentScoreInBag { get; set; }
-    public long TagOnCurrentTile { get; set; }
+    public long? TagOnCurrentTile { get; set; }
 }
