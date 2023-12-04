@@ -10,4 +10,4 @@ internal sealed class MoveAction
     public long? TagOnTile { get; set; }
 }
 
-internal enum Direction { Up, Right, Down, Left }
+internal enum Direction { None, Up, Right, Down, Left }
