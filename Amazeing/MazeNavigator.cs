@@ -35,6 +35,11 @@ internal sealed class MazeNavigator
         UpdateMazePlayerState(possibleActionsAndCurrentScore, Direction.None);
     }
 
+    public Task SolveAsync()
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task MoveAsync(Direction direction)
     {
         await Console.Out.WriteLineAsync($"Trying to move {direction}...");

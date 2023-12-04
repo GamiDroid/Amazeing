@@ -29,4 +29,16 @@ foreach (var maze in mazes)
 
 AnsiConsole.Write(grid);
 
-Console.ReadLine();
+var mazeNavigator = new MazeNavigator(mazeRepo, httpclient);
+
+try
+{
+    await mazeNavigator.EnterAsync("Test");
+    await mazeNavigator.SolveAsync();
+
+    Console.WriteLine("Maze is solved!!");
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Unhandled exception: {0}", ex);
+}
