@@ -33,6 +33,12 @@ internal class MazeRepo : IDisposable
         return mazes;
     }
 
+    public Task<MazeInfo?> GetMazeByNameAsync(string name)
+    {
+        using var db = new AmazeingDbContext();
+        return db.Mazes.AsNoTracking().FirstOrDefaultAsync(x => x.Name == name);
+    }
+
     public void Dispose()
     {
         _httpClient?.Dispose();
