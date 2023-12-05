@@ -108,14 +108,24 @@ internal sealed class MazeNavigator
                     .ToList();
 
                 var tile = _state.Tiles
-                    .Where(x => possiblePositions.Contains(x.Position))
+                    .Where(x => possiblePositions.Contains(x.Position)
+                        && x.IsVisited == false)
                     .OrderByDescending(x => x.Reward)
-                    .ThenByDescending(x => x.IsVisited)
-                    .First();
+                    .FirstOrDefault();
 
-                var direction = _state.PlayerPosition.GetDirection(tile.Position);
-
-                await MoveAsync(direction);
+                if (tile is not null)
+                {
+                    var direction = _state.PlayerPosition.GetDirection(tile.Position);
+                    await MoveAsync(direction);
+                }
+                else
+                {
+                    var notVisitedTile = _state.Tiles
+                        .Where(x => x.IsVisited == false)
+                        .OrderByDescending(x => x.Reward)
+                        .First();
+                    await MoveToPositionAsync(notVisitedTile.Position);
+                }
             }
         }
     }
