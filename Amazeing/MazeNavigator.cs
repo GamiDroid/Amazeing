@@ -35,9 +35,128 @@ internal sealed class MazeNavigator
         UpdateMazePlayerState(possibleActionsAndCurrentScore, Direction.None);
     }
 
-    public Task SolveAsync()
+    public async Task SolveAsync()
     {
-        throw new NotImplementedException();
+        while (true)
+        {
+            if (_state.MazeScoreInBag == _state.PotentialReward)
+            {
+                // try going to exit...
+
+                var currentTile = _state.Tiles.First(x => x.Position == _state.PlayerPosition);
+                if (currentTile.ExitPoint)
+                {
+                    await ExitAsync();
+                    break; // Maze solved, exit while-loop
+                }
+
+                Position positionToMoveTo;
+                var exitPoint = _state.Tiles.FirstOrDefault(x => x.ExitPoint);
+                if (exitPoint is null)
+                {
+                    var notVisitedTile = _state.Tiles.First(x => x.IsVisited == false);
+                    positionToMoveTo = notVisitedTile.Position;
+                }
+                else
+                {
+                    positionToMoveTo = exitPoint.Position;
+                }
+
+                await MoveToPositionAsync(positionToMoveTo);
+            }
+            else if (_state.MazeScoreInHand == _state.PotentialReward)
+            {
+                // try going to collect position...
+
+                var currentTile = _state.Tiles.First(x => x.Position == _state.PlayerPosition);
+                if (currentTile.CollectionPoint)
+                {
+                    await CollectionAsync();
+                    continue;
+                }
+
+                Position positionToMoveTo;
+                var collectionPoint = _state.Tiles.FirstOrDefault(x => x.CollectionPoint);
+                if (collectionPoint is null)
+                {
+                    var notVisitedTile = _state.Tiles.First(x => x.IsVisited == false);
+                    positionToMoveTo = notVisitedTile.Position;
+                }
+                else
+                {
+                    positionToMoveTo = collectionPoint.Position;
+                }
+                
+                await MoveToPositionAsync(positionToMoveTo);
+            }
+            else if (_state.AmountOfTilesFound == _state.TotalTiles)
+            {
+                // Go to tile with reward
+                var tileWithReward = _state.Tiles.FirstOrDefault(x => x.Reward > 0);
+                if (tileWithReward is not null)
+                {
+                    await MoveToPositionAsync(tileWithReward.Position);
+                }
+            }
+            else
+            {
+                // move to next tile...
+
+                var possiblePositions = _state.Paths
+                    .Where(x => x.Start == _state.PlayerPosition)
+                    .Select(x => x.End)
+                    .ToList();
+
+                var tile = _state.Tiles
+                    .Where(x => possiblePositions.Contains(x.Position))
+                    .OrderByDescending(x => x.Reward)
+                    .ThenByDescending(x => x.IsVisited)
+                    .First();
+
+                var direction = _state.PlayerPosition.GetDirection(tile.Position);
+
+                await MoveAsync(direction);
+            }
+        }
+    }
+
+    private ICollection<Direction> FindPathToDestination(Position start, Position destination)
+    {
+        if (start == destination)
+        {
+            return Array.Empty<Direction>();
+        }
+        
+        var possiblePaths = _state.Paths.Where(x => x.Start == start);
+        if (!possiblePaths.Any())
+        {
+            throw new InvalidOperationException("Cannot move from this position");
+        }
+
+        var queue = new PriorityQueue<(Position, ICollection<Direction>), int>();
+        foreach (var path in possiblePaths)
+        {
+            var direction = path.Start.GetDirection(path.End);
+            queue.Enqueue((path.End, new[] { direction }), 1);
+        }
+
+        while (queue.TryDequeue(out var i, out var _))
+        {
+            var currentPos = i.Item1;
+            var directions = i.Item2;
+
+            if (currentPos == destination)
+                return directions;
+
+            foreach (var path in _state.Paths.Where(x => x.Start == currentPos))
+            {
+                var direction = path.Start.GetDirection(path.End);
+                var newDirections = new List<Direction>(directions) { direction };
+                queue.Enqueue((path.End, newDirections), newDirections.Count);
+            }
+        }
+
+        return Array.Empty<Direction>();
     }
 
     public async Task MoveAsync(Direction direction)
@@ -53,6 +172,19 @@ internal sealed class MazeNavigator
         UpdateMazePlayerState(possibleActionsAndCurrentScore, direction);
 
         await Console.Out.WriteLineAsync($"Moved {direction}");
+    }
+
+    public async Task MoveToPositionAsync(Position destination)
+    {
+        await Console.Out.WriteLineAsync($"Try moving from {_state.PlayerPosition} to {destination}");
+
+        var directionsToDestination = FindPathToDestination(_state.PlayerPosition, destination);
+        foreach (var direction in directionsToDestination)
+        {
+            await MoveAsync(direction);
+        }
+
+        await Console.Out.WriteLineAsync($"Player arrived at {_state.PlayerPosition}");
     }
 
     public async Task CollectionAsync()
@@ -127,7 +259,7 @@ internal class MazePlayerState
     public int MazeScoreInBag { get; set; }
 
     public ICollection<MazeTile> Tiles { get; } = new HashSet<MazeTile>();
-    public int TilesFound => Tiles.Count;
+    public int AmountOfTilesFound => Tiles.Count;
     public void AddOrUpdateMazeTile(MazeTile tile)
     {
         var existingTile = Tiles.FirstOrDefault(t => t.Position == tile.Position);

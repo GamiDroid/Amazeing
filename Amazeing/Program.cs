@@ -33,7 +33,7 @@ var mazeNavigator = new MazeNavigator(mazeRepo, httpclient);
 
 try
 {
-    await mazeNavigator.EnterAsync("Test");
+    await mazeNavigator.EnterAsync("Example Maze");
     await mazeNavigator.SolveAsync();
 
     Console.WriteLine("Maze is solved!!");
@@ -41,4 +41,9 @@ try
 catch (Exception ex)
 {
     Console.WriteLine("Unhandled exception: {0}", ex);
+}
+finally
+{
+    Console.WriteLine("End of program. Press any key to exit");
+    Console.ReadKey();
 }
