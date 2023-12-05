@@ -21,4 +21,13 @@ internal record struct Position(int X, int Y)
 
         return new Position(posX, posY);
     }
+
+    internal readonly Direction GetDirection(Position other)
+    {
+        if (other.X > this.X) return Direction.Right;
+        else if (other.X < this.X) return Direction.Left;
+        else if (other.Y > this.Y) return Direction.Up;
+        else if (other.Y < this.Y) return Direction.Down;
+        return Direction.None;
+    }
 }
