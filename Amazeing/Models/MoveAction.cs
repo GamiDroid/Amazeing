@@ -9,5 +9,3 @@ internal sealed class MoveAction
     public int RewardOnDestination { get; set; }
     public long? TagOnTile { get; set; }
 }
-
-internal enum Direction { None, Up, Right, Down, Left }
