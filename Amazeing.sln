@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionF
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amazeing.Tests", "Amazeing.Tests\Amazeing.Tests.csproj", "{BEEE041D-DF3D-41EB-ABAB-CEEC67AF099E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{4F0E6A9D-CB0D-41D1-866F-59D92087D113}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F0E6A9D-CB0D-41D1-866F-59D92087D113}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F0E6A9D-CB0D-41D1-866F-59D92087D113}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEEE041D-DF3D-41EB-ABAB-CEEC67AF099E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEEE041D-DF3D-41EB-ABAB-CEEC67AF099E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEEE041D-DF3D-41EB-ABAB-CEEC67AF099E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEEE041D-DF3D-41EB-ABAB-CEEC67AF099E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
