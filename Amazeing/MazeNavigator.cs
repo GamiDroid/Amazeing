@@ -23,6 +23,8 @@ internal sealed class MazeNavigator
         var response = await _httpClient.PostAsync($"/api/mazes/enter?mazeName={mazeName}", new StringContent(""));
         response.EnsureSuccessStatusCode();
 
+        await Console.Out.WriteLineAsync($"Entering maze '{mazeName}'");
+
         _state = new MazePlayerState
         {
             TotalTiles = mazeInfo.TotalTiles,
@@ -181,7 +183,7 @@ internal sealed class MazeNavigator
 
         UpdateMazePlayerState(possibleActionsAndCurrentScore, direction);
 
-        await Console.Out.WriteLineAsync($"Moved {direction}");
+        await Console.Out.WriteLineAsync($"Moved {direction} to {_state.PlayerPosition}");
     }
 
     public async Task MoveToPositionAsync(Position destination)
