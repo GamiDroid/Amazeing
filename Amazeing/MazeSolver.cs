@@ -140,11 +140,13 @@ internal sealed class MazeSolver
             throw new InvalidOperationException("Cannot move from this position");
         }
 
+        HashSet<Position> visited = [start];
         var queue = new PriorityQueue<(Position, ICollection<Direction>), int>();
         foreach (var path in possiblePaths)
         {
             var direction = path.Start.GetDirection(path.End);
             queue.Enqueue((path.End, new[] { direction }), 1);
+            visited.Add(path.End);
         }
 
         while (queue.TryDequeue(out var i, out var _))
@@ -155,8 +157,13 @@ internal sealed class MazeSolver
             if (currentPos == destination)
                 return directions;
 
+            visited.Add(currentPos);
+
             foreach (var path in _state.Paths.Where(x => x.Start == currentPos))
             {
+                if (visited.Contains(path.End))
+                    continue;
+
                 var direction = path.Start.GetDirection(path.End);
                 var newDirections = new List<Direction>(directions) { direction };
                 queue.Enqueue((path.End, newDirections), newDirections.Count);
