@@ -3,13 +3,13 @@ using Amazeing.Repositories;
 using System.Net.Http.Json;
 
 namespace Amazeing;
-internal sealed class MazeNavigator
+internal sealed class MazeSolver
 {
     private readonly MazeRepo _repo;
     private readonly HttpClient _httpClient;
     private MazePlayerState _state = new();
 
-    public MazeNavigator(MazeRepo repo, HttpClient httpClient)
+    public MazeSolver(MazeRepo repo, HttpClient httpClient)
     {
         _repo = repo;
         _httpClient = httpClient;

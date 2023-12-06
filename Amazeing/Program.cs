@@ -29,14 +29,18 @@ foreach (var maze in mazes)
 
 AnsiConsole.Write(grid);
 
-var mazeNavigator = new MazeNavigator(mazeRepo, httpclient);
+var mazeSolver = new MazeSolver(mazeRepo, httpclient);
 
 try
 {
-    await mazeNavigator.EnterAsync("Example Maze");
-    await mazeNavigator.SolveAsync();
+    await mazeSolver.EnterAsync("Test");
+    await mazeSolver.SolveAsync();
 
-    Console.WriteLine("Maze is solved!!");
+    await mazeSolver.EnterAsync("Example Maze");
+    await mazeSolver.SolveAsync();
+
+    await mazeSolver.EnterAsync("Hello Maze");
+    await mazeSolver.SolveAsync();
 }
 catch (Exception ex)
 {
