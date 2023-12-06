@@ -32,16 +32,41 @@ AnsiConsole.Write(grid);
 var mazeNavigator = new MazeNavigator(httpclient);
 var mazeSolver = new MazeSolver(mazeRepo, mazeNavigator);
 
+var mazeNames = new[] 
+{
+    "Dig Down",
+    "Easy deal",
+    "Egg",
+    "Example Maze",
+    "Exit",
+    "Glasses",
+    "Gradius Pathways",
+    "Hello Maze",
+    "Loops",
+    "Michiel",
+    "O Contra",
+    "PacMan",
+    "Reverse",
+    "Spiral Of Doom",
+    "Test",
+    "Void",
+    "Needle",
+};
+
 try
 {
-    await mazeSolver.EnterAsync("Test");
-    await mazeSolver.SolveAsync();
-
-    await mazeSolver.EnterAsync("Example Maze");
-    await mazeSolver.SolveAsync();
-
-    await mazeSolver.EnterAsync("Hello Maze");
-    await mazeSolver.SolveAsync();
+    foreach (var mazeName in mazeNames)
+    {
+        try
+        {
+            await mazeSolver.EnterAsync(mazeName);
+            await mazeSolver.SolveAsync();
+        }
+        catch
+        {
+            Console.WriteLine("Exception occured. state has been saved to json file.");
+        }
+    }
 }
 catch (Exception ex)
 {
