@@ -1,5 +1,6 @@
 ﻿using Amazeing.Models;
 using Amazeing.Repositories;
+using System.Text.Json;
 
 namespace Amazeing;
 internal sealed class MazeSolver
@@ -25,6 +26,7 @@ internal sealed class MazeSolver
 
         _state = new MazePlayerState
         {
+            MazeName = mazeName,
             TotalTiles = mazeInfo.TotalTiles,
             PotentialReward = mazeInfo.PotentialReward
         };
@@ -151,6 +153,15 @@ internal sealed class MazeSolver
 
         while (queue.TryDequeue(out var i, out var _))
         {
+            if (queue.Count > 10_000)
+            {
+                var stateAsJson = JsonSerializer.Serialize(_state);
+
+                File.WriteAllTextAsync($"{_state.MazeName}.json", stateAsJson);
+                
+                throw new InvalidProgramException("Queue has become to big. Unable to find path");
+            }
+
             var currentPos = i.Item1;
             var directions = i.Item2;
 
@@ -255,6 +266,7 @@ internal sealed class MazeSolver
 
 internal class MazePlayerState
 {
+    public string? MazeName { get; set; }
     public Position PlayerPosition { get; set; }
     public int TotalTiles { get; set; }
     public int PotentialReward { get; set; }
