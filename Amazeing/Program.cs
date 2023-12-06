@@ -29,7 +29,8 @@ foreach (var maze in mazes)
 
 AnsiConsole.Write(grid);
 
-var mazeSolver = new MazeSolver(mazeRepo, httpclient);
+var mazeNavigator = new MazeNavigator(httpclient);
+var mazeSolver = new MazeSolver(mazeRepo, mazeNavigator);
 
 try
 {

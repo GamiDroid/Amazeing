@@ -1,5 +1,5 @@
 ﻿namespace Amazeing.Models;
-internal sealed class MoveAction
+public sealed class MoveAction
 {
     public string? Direction { get; set; }
     public bool IsStart { get; set; }

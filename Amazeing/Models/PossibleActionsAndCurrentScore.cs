@@ -1,5 +1,5 @@
 ﻿namespace Amazeing.Models;
-internal sealed class PossibleActionsAndCurrentScore
+public sealed class PossibleActionsAndCurrentScore
 {
     public HashSet<MoveAction> PossibleMoveActions { get; set; } = [];
     public bool CanCollectScoreHere { get; set; }

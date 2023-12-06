@@ -1,18 +1,17 @@
 ﻿using Amazeing.Models;
 using Amazeing.Repositories;
-using System.Net.Http.Json;
 
 namespace Amazeing;
 internal sealed class MazeSolver
 {
     private readonly MazeRepo _repo;
-    private readonly HttpClient _httpClient;
+    private readonly IMazeNavigator _mazeNavigator;
     private MazePlayerState _state = new();
 
-    public MazeSolver(MazeRepo repo, HttpClient httpClient)
+    public MazeSolver(MazeRepo repo, IMazeNavigator mazeNavigator)
     {
         _repo = repo;
-        _httpClient = httpClient;
+        _mazeNavigator = mazeNavigator;
     }
 
     public async Task EnterAsync(string mazeName)
@@ -20,8 +19,7 @@ internal sealed class MazeSolver
         var mazeInfo = await _repo.GetMazeByNameAsync(mazeName) ??
             throw new InvalidDataException($"Could not find maze with name {mazeName}");
 
-        var response = await _httpClient.PostAsync($"/api/mazes/enter?mazeName={mazeName}", new StringContent(""));
-        response.EnsureSuccessStatusCode();
+        var possibleActionsAndCurrentScore = await _mazeNavigator.EnterAsync(mazeName);
 
         await Console.Out.WriteLineAsync($"Entering maze '{mazeName}'");
 
@@ -30,9 +28,6 @@ internal sealed class MazeSolver
             TotalTiles = mazeInfo.TotalTiles,
             PotentialReward = mazeInfo.PotentialReward
         };
-
-        var possibleActionsAndCurrentScore = await response.Content.ReadFromJsonAsync<PossibleActionsAndCurrentScore>() ??
-            throw new InvalidDataException($"response could not be parsed to type {nameof(PossibleActionsAndCurrentScore)}");
 
         UpdateMazePlayerState(possibleActionsAndCurrentScore, Direction.None);
     }
@@ -73,7 +68,7 @@ internal sealed class MazeSolver
                 var currentTile = _state.Tiles.First(x => x.Position == _state.PlayerPosition);
                 if (currentTile.CollectionPoint)
                 {
-                    await CollectionAsync();
+                    await CollectAsync();
                     continue;
                 }
 
@@ -175,11 +170,7 @@ internal sealed class MazeSolver
     {
         await Console.Out.WriteLineAsync($"Trying to move {direction}...");
 
-        var response = await _httpClient.PostAsync($"/api/maze/move?direction={direction}", new StringContent(""));
-        response.EnsureSuccessStatusCode();    
-
-        var possibleActionsAndCurrentScore = await response.Content.ReadFromJsonAsync<PossibleActionsAndCurrentScore>()
-                ?? throw new InvalidDataException();
+        var possibleActionsAndCurrentScore = await _mazeNavigator.MoveAsync(direction);
 
         UpdateMazePlayerState(possibleActionsAndCurrentScore, direction);
 
@@ -199,15 +190,11 @@ internal sealed class MazeSolver
         await Console.Out.WriteLineAsync($"Player arrived at {_state.PlayerPosition}");
     }
 
-    public async Task CollectionAsync()
+    public async Task CollectAsync()
     {
         await Console.Out.WriteLineAsync("Trying to collect score...");
 
-        var response = await _httpClient.PostAsync("/api/maze/collectScore", new StringContent(""));
-        response.EnsureSuccessStatusCode();
-
-        var possibleActionsAndCurrentScore = await response.Content.ReadFromJsonAsync<PossibleActionsAndCurrentScore>() 
-            ?? throw new InvalidDataException();
+        var possibleActionsAndCurrentScore = await _mazeNavigator.CollectAsync();
 
         UpdateMazePlayerState(possibleActionsAndCurrentScore, Direction.None);
 
@@ -217,10 +204,7 @@ internal sealed class MazeSolver
     public async Task ExitAsync()
     {
         await Console.Out.WriteLineAsync("Trying to exit maze...");
-
-        var response = await _httpClient.PostAsync("/api/maze/exit", new StringContent(""));
-        response.EnsureSuccessStatusCode();
-
+        await _mazeNavigator.ExitAsync();
         await Console.Out.WriteLineAsync("Exited the maze");
     }
 
